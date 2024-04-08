@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <!-- Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!--  -->
+          <li v-for="link in links" class="nav-item active">
+            <!-- 
+              2. you would think putting href="{{link.url}}" would work
+                BUT nope
+                what we want to do is use a vue DIRECTIVE again called
+                
+                'v-bind' + ':[attribute name]'
+                
+                the colon followed by the html attribute to bind the value to
+                and then the value, is just a js expression so DOES NOT NEED {{}}
+                so below v-bind:href="link.url"
+            -->
+            <a
+              class="nav-link"
+              v-bind:href="link.url"
+              :title="`This link goes to the ${link.text} page`"
+              :key="index"
+              >{{link.text}}
+            </a>
+
+            <!-- 3. binding data to an attribute is VERY very common so sometimes
+                    you will find in the majority of projects something like this:
+                    
+                    :href="link.url"
+                    
+                    you don't even need the v-bind directive, just the colon and attribute name
+                    we can do this for any html attribute i.e.
+
+                    :title="`This link goes to the ${link.text} page`"
+
+                    remember that binding the attribute turns the value into js so use `` es6 syntax
+
+
+              4. one other thing that's not important right now,
+              because the data that we are providing our navbar is STATIC. We aren't changing our data
+              HOWEVER, when we do change that data, Vue is going to automatically change what is seen inside of the browser
+              we don't have to do anything.
+              BUT we do need to HELP VUE so that it can identify which object that it needs to update
+              so we need to provide a key or a unique identifier for each one of the li elements that we are
+              generating above with the V4 directive so we do that by v-binding a key so
+
+              "v-bind:key" or ":key"
+
+              and this has to be a UNIQUE value for EACH li element that is generated or a better way of thinking about it is
+              a unique identifier for each item in the links array. One thing that is unique is the INDEX of the elements so
+              we could use the index for the key.
+
+              this is strictly for helping vue
+            -->
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!--  -->
+    <div id="content" class="container">
+      <h1>{{pageTitle}}</h1>
+      <p>{{content}}</p>
+    </div>
+
+    <script>
+      Vue.createApp({
+        data() {
+          return {
+            links: [
+              { text: 'Home', url: 'index.html' }, //1. turn into an object to create a url property to use in the html attribute
+              { text: 'About', url: 'about.html' },
+              { text: 'Contact', url: 'contact.html' },
+            ],
+          };
+        },
+      }).mount('nav');
+
+      Vue.createApp({
+        data() {
+          return {
+            pageTitle: 'Hello, Vue',
+            content: 'Welcome to the wonderful world of view',
+          };
+        },
+      }).mount('#content');
+    </script>
+  </body>
+</html>
