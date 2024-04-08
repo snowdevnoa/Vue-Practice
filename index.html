@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="content" class="container">
+      <h1>{{pageTitle}}</h1>
+      <p>{{content}}</p>
+    </div>
+
+    <script>
+      /*
+      create a vue application by using the Vue object from the vue library
+      and a method called 'createApp' and thus its called a vue instance
+     
+      Vue.createApp() // cool thing is that we can have multiple view instance in a single web page
+        .mount('#content'); // use the mount method specify html element we want to mount this, uses a css selector
+      BTS 
+    since we have mounted our application with this div element with the id of content what
+        we have inside of the div element is a TEMPlATE. and vue is going to use this template
+        in order to generate what we see inside the browser
+
+        right now our template is hard coded html.
+        However we want to soft code this, we want to provide data to the application so we can
+        view them in our template.
+
+        So we do this by passing what we call "options" in the createApp() method.
+        The "options" is nothing but an object, and the properties are well. . . options
+
+    */
+      Vue.createApp({
+        /*first option is a data option. this provides data to the application
+            data() is a funciton that returns an object. In React this is similar and referred to as 'state'
+        */
+        data() {
+          return {
+            pageTitle: 'Hello, Vue', //use {{property name}} in html to display value
+            content: 'Welcome to the wonderful world of view'
+          };
+        },
+      }).mount('#content');
+    </script>
+  </body>
+</html>
