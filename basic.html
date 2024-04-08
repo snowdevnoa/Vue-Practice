@@ -13,6 +13,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   </head>
   <body>
+    <!--  -->
     <div id="content" class="container">
       <h1>{{pageTitle}}</h1>
       <p>{{content}}</p>
@@ -23,7 +24,7 @@
       create a vue application by using the Vue object from the vue library
       and a method called 'createApp' and thus its called a vue instance
      
-      Vue.createApp() // cool thing is that we can have multiple view instance in a single web page
+      Vue.createApp() // cool thing is that we can have multiple vue instance in a single web page
         .mount('#content'); // use the mount method specify html element we want to mount this, uses a css selector
       BTS 
     since we have mounted our application with this div element with the id of content what
@@ -45,10 +46,11 @@
         data() {
           return {
             pageTitle: 'Hello, Vue', //use {{property name}} in html to display value
-            content: 'Welcome to the wonderful world of view'
+            content: 'Welcome to the wonderful world of view',
           };
         },
       }).mount('#content');
+      
     </script>
   </body>
 </html>
