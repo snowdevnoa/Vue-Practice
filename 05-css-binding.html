@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <!-- Navbar-->
+    <!-- 3. use the vue bind directive to the class attribute to change it from light or dark based on
+        useDarkNavbar value
+
+        BIG NOTE- the css classes that we want to apply is not valid in js, however we can wrap it in a string i.e.
+        :class="{navbar-dark: useDarkNavbar == True}"      does not work
+        :class="{'navbar-dark': useDarkNavbar == True}"      does work
+
+
+        :class="{'navbar-dark': useDarkNavbar, 'bg-dark': useDarkNavbar}"     we can also combine multiple classes at the same time
+        :class="{'navbar-dark bg-dark': useDarkNavbar}"
+    -->
+    <nav
+      class="navbar navbar-expand-lg"
+      :class="{'navbar-dark bg-dark': useDarkNavbar,  'navbar-light bg-light': !useDarkNavbar}"
+    >
+      <!-- to summarize line  28-30 we are binding our classes 
+        but since these classes use hyphens in their name, we can't use this as normal js identifiers
+        so are property name is denoted with a string. 
+        we are using two css classes separated by a space as the property name inside of the string
+        and then the conditional value to use the dark navbar when it's TRUE else false
+    -->
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li
+            v-for="(page, index) in pages"
+            class="nav-item active"
+            :key="index"
+          >
+            <!-- 1. What we want to do is include the 'active' class to the a link tag
+                BUT ONLY when the activePage = index
+                we need some type of conditional statement
+
+                activePage == index ? 'active'
+
+                well we can do this very simply by using v-bind directive on the class
+
+                (remember v-bind:class is the same as) 
+                :class="{class_name: [conditional statement]}"    
+                
+                DO NOT USE TERNARY but an object and the properties of the object are the css classes that we want to apply to the element
+                
+
+                might look a little weird cause of two class attributes but it is normal.
+                Think of it as regular class="" attribute is to apply css always
+                but for conditional css it will be :class
+            -->
+            <a
+              class="nav-link"
+              :class="{active: activePage == index}"
+              :style="{'color': activePage == index ? 'white' : 'black'}"
+              v-bind:href="page.link.url"
+              :title="`This link goes to the ${page.link.text} page`"
+              v-on:click.prevent="activePage = index"
+              >{{page.link.text}}
+            </a>
+          </li>
+        </ul>
+        <!-- 3. Add button (bootstrap button is in form) to toggle on and off 
+            
+            remember to use the v-on:[name of event] directive can also  @[name of event]
+        -->
+        <form class="d-flex">
+          <!-- 
+             add in the preventDefault to the event, .prevent, to make sure nothing unexpected happen since it is in a form
+           -->
+          <button
+            class="btn btn-primary"
+            v-on:click.prevent="useDarkNavbar = !useDarkNavbar"
+          >
+            {{useDarkNavbar ? "Change to light mode" : "Change to dark mode"}}
+          </button>
+        </form>
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+      <h1>{{pages[activePage].pageTitle}}</h1>
+      <p>{{pages[activePage].content}}</p>
+    </div>
+
+    <script>
+      Vue.createApp({
+        data() {
+          return {
+            activePage: 0,
+            useDarkNavbar: true, // 2. Practice with navbar to make it light or dark
+            pages: [
+              {
+                link: { text: 'Home', url: 'index.html' },
+                pageTitle: 'Home Page',
+                content: 'This is home content',
+              },
+              {
+                link: { text: 'About', url: 'about.html' },
+                pageTitle: 'About Page',
+                content: 'This is about content',
+              },
+              {
+                link: { text: 'Contact', url: 'contact.html' },
+                pageTitle: 'Contact Page',
+                content: 'This is contact content',
+              },
+            ],
+          };
+        },
+      }).mount('body');
+    </script>
+  </body>
+</html>
+
+<!--  self challenge: read documentation to learn the method option in vue and replacethe solution above 
+
+    Solution:
+     //add a methods option in the createApp object. The methods option/property is an object to store multiple functions/methods of the app
+        methods: {
+          toggleNav(event) {
+            /* this property refers to the instance of the data object so
+
+                useDarkNavbar = !useDarkNavbar does not work because it doesn't know what variable it is referring to
+                but 
+                this.useDarkNavbar = !this.useDarkNavbar; does work
+
+                just like classes
+
+            */
+            this.useDarkNavbar = !this.useDarkNavbar;
+          },
+        },
+-->
