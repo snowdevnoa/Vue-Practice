@@ -15,18 +15,30 @@
   <body>
     <!-- Navbar-->
     <!-- 
-    1. In the last lesson we used an object for the v-bind directive with the class attribute, 
-         where the properties are css classes we want to apply and then their values were a conditional expressions on whether or not they were actually applied
+    1. In the last lesson we used a computed property of navbarClasses 
+    to the vue directive bind on the class attribute of the navbar. Each time the useDarkNavbar
+    value changed, so did the value for the css.
 
-        in this lesson we want to focus on this expression:
-        :class="{'navbar-dark bg-dark': useDarkNavbar,  'navbar-light bg-light': !useDarkNavbar}"
-        while it works, it may not be the quickets and easy to read
+    But we can also do the same thing WITHOUT the computed property. instead of an object,
+    we can use an array to bind classes:
 
-        instead do
-        :class='navbarClasses'
+    :class="[css_classes_applied_to_the_element]"
 
+    :class="['navbar-dark', 'bg-dark']"    toggle no longer works because the dark css is hardcoded
+
+    instead we can do this
+    :class="[useDarkNavbar ? 'bg-dark' : 'bg-light']" 
+    NOTE this expression is only for ONE element in the array, if we want to apply any other use the comma cause its an array
+      :class="[useDarkNavbar ? 'bg-dark' : 'bg-light', 'bg-light', 'navbar','navbar-expand-lg']" 
+
+
+      now it would be cool if we could do something like to where we can have our individual elements, but then
+      we could have like a theme property and then we could change the value of that theme so that the navbar and the 
+      background color could change based upon that theme while everything else is fine
     -->
-    <nav class="navbar navbar-expand-lg" :class="navbarClasses">
+    <nav
+      :class="[`navbar-${theme}`, `bg-${theme}`, 'navbar', 'navbar-expand-lg']"
+    >
       <a class="navbar-brand" href="#">Navbar</a>
       <button
         class="navbar-toggler"
@@ -46,8 +58,6 @@
             class="nav-item active"
             :key="index"
           >
-            <!-- 
-            -->
             <a
               class="nav-link"
               :class="{active: activePage == index}"
@@ -59,10 +69,13 @@
           </li>
         </ul>
         <form class="d-flex">
-          <button
-            class="btn btn-primary"
-            v-on:click.prevent="useDarkNavbar = !useDarkNavbar"
-          >
+          <!-- 4. change theme value 
+          
+            theme = (theme == 'light' ? 'dark' : 'light')
+
+            OR use a method
+          -->
+          <button class="btn btn-primary" v-on:click.prevent="changeTheme">
             {{useDarkNavbar ? "Change to light mode" : "Change to dark mode"}}
           </button>
         </form>
@@ -76,96 +89,29 @@
 
     <script>
       Vue.createApp({
-        /* 4.  Solution:
-              COMPUTED PROPERTY- a property that is evaluated on the fly, after initialization
-              we can create a computed proeprty by using the computed OPTION which is another object where the
-              properties are functions that will execute
-        */
+        /*
+        2. We can get rid of this computed property
         computed: {
           navbarClasses() {
-            /*
-            5. this is a function because this is a computed property, it has to execute in order to generate it's value
-            
-            all we need to do is lift this code from our data option:
-              'navbar-dark': this.useDarkNavbar,
-              'bg-dark': this.useDarkNavbar,
-              'navbar-light': !this.useDarkNavbar,
-              'bg-light': !this.useDarkNavbar,
-
-              and return from line 127-130
-
-
-              Summary:
-            6. Because we click on the toggle button, it changes the value of the useDarkNavbar,
-            and because used useDarkNavbar inside of the computed property called navbarClasses,
-            it will automatically recompute this property (calls the function to computer).
-            It returns the object that is then use to bind to our class onn our nav
-
-
-
-
-            */
             return {
               'navbar-dark': this.useDarkNavbar,
               'bg-dark': this.useDarkNavbar,
               'navbar-light': !this.useDarkNavbar,
               'bg-light': !this.useDarkNavbar,
-              /*
-              4. the way this works is that behind the scene, Vue knows that useDarknavbar
-              is something that it has to react to. and because we are using it inside the 
-              computed property, it will then automatically compute this value when useDarkNavbar changes
-              */
             };
           },
         },
+        */
 
         data() {
           return {
             activePage: 0,
-            useDarkNavbar: false,
-            /* 2. You may think of doing this, but it will not work 
-            navbarClasses: {
 
-              'navbar-dark bg-dark': useDarkNavbar,
-              'navbar-light bg-light': !useDarkNavbar,
-            }
+            /*3. and remove useDarkNavbar: false
 
-              well first separate the classes, each individual class is each individual property
-              'navbar-dark': useDarkNavbar,
-              'bg-dark':useDarkNavbar,
-              'navbar-light':!useDarkNavbar,
-              'bg-light': !useDarkNavbar,
-
-              now because this is inside js and not in our template, we need to adhere to the rules of js syntax.
-              useDarkNavbar isn't just a variable but a proeprty inside of our app. Because it is defined inside of the object
-              (line 83)
-
-              
-              'navbar-dark': this.useDarkNavbar,
-              'bg-dark': this.useDarkNavbar,
-              'navbar-light': !this.useDarkNavbar,
-              'bg-light': !this.useDarkNavbar,
-
-              
-              3. Now the code is error free but it is not working BECAUSE we used our useDarkNavbar property
-              Because this code (from line 80 return to end of data) is initializing our application data.
-              It is not setting it up to be reactive, just simply initializing all of these values for these properties.
-            
-              --- That means whenever the code executes to create this navbarClasses object, it is using the actual value of useDarkNavbar
-              so the code above equals
-
-              'navbar-dark': false
-              'bg-dark': false
-              'navbar-light': !false
-              'bg-dark': !false
-
-              so it is applying actual boolean values to the properties so there is nothing that Vue thinks it needs to react to.
-
-              Inside of the browser, whenever we click on the toggle the useDarkNavbar property IS changing, 
-              BUT the problem is that the actual boolean value is being applied to the properties like the example above with 'navbar-dark': false
-
-              */
-
+            instead we can use this property called theme
+            */
+            theme: 'light',
             pages: [
               {
                 link: { text: 'Home', url: 'index.html' },
@@ -185,62 +131,21 @@
             ],
           };
         },
+
+        /*
+        ADD METHOD OPTION which is an object that contains all the methods defined
+        */
+        methods: {
+          changeTheme() {
+            //create local variable
+            if (this.theme == 'light') {
+              this.theme = 'dark';
+            } else {
+              this.theme = 'light';
+            }
+          },
+        },
       }).mount('body');
     </script>
   </body>
 </html>
-
-<!-- Note:
-
-Computed values and methods are very different in Vue and are definitely not interchangeable in most cases.
-
-Computed Property
-
-A more appropriate name for a computed value is a computed property. In fact, when the Vue is instantiated, computed properties are converted into a property of the Vue with a getter and sometimes a setter. Basically you can think of a computed value as a derived value that will be automatically updated whenever one of the underlying values used to calculate it is updated. You don't call a computed and it doesn't accept any parameters. You reference a computed property just like you would a data property. Here's the classic example from the documentation:
-
-computed: {
-  // a computed getter
-  reversedMessage: function () {
-    // `this` points to the vm instance
-    return this.message.split('').reverse().join('')
-  }
-}
-Which is referenced in the DOM like this:
-
-<p>Computed reversed message: "{{ reversedMessage }}"</p>
-Computed values are very valuable for manipulating data that exists on your Vue. Whenever you want to filter or transform your data, typically you will use a computed value for that purpose.
-
-data:{
-    names: ["Bob", "Billy", "Mary", "Jane"]
-},
-computed:{
-    startsWithB(){
-        return this.names.filter(n => n.startsWith("B"))
-    }
-}
-
-<p v-for="name in startsWithB">{{name}}</p>
-Computed values are also cached to avoid repetitively calculating a value that doesn't need to be re-calculated when it hasn't changed (as it might not be in a loop for example).
-
-Method
-
-A method is just a function bound to the Vue instance. It will only be evaluated when you explicitly call it. Like all javascript functions, it accepts parameters and will be re-evaluated every time it's called. Methods are useful in the same situations any function is useful.
-
-data:{
-    names: ["Bob", "Billy", "Mary", "Jane"]
-},
-computed:{
-    startsWithB(){
-        return this.startsWithChar("B")
-    },
-    startsWithM(){
-        return this.startsWithChar("M")
-    }
-},
-methods:{
-    startsWithChar(whichChar){
-        return this.names.filter(n => n.startsWith(whichChar))
-    }
-}
-Vue's documentation is really good and easily accessible. I recommend it.
--->
