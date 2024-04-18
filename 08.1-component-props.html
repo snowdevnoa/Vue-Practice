@@ -53,29 +53,38 @@
         </form>
       </div>
     </nav>
-    <!-- 
 
-    1. We need to supply/pass the data for the page viewer component to do it's thing,
+    <!-- 5. Take the html and put it into the template for the component
+      
+      <div id="content" class="container">
+      <h1>{{pages[activePage].pageTitle}}</h1>
+      <p>{{pages[activePage].content}}</p>
+    </div> -->
+
+    <!-- 6. We can use our template/vue component by using normal html element syntax with the name of the component -->
+    <page-viewer
+      page-title="Page Title 2"
+      page-content="Page Content 2"
+    ></page-viewer>
+    <!-- 7. Above this, we need to supply/pass the data for the page viewer component to do it's thing,
     in Vue we use the term props
 
     A component has props we can pass data to. We can pass data into 2 different ways:
 
-    The OTHER WAY for dynamic data is to use the v-bind: Vue directive on the html attribute of the component
-    aka we are binding some javascript expression to.
-    v-bind:page-title="'Page Title 2'" (remember inside quotes is js so if i want string literals, wrap it in single quotes)
+    One Way: normal html attributes but specific to these components
+   <page-viewe page-title="Page Title 2" page-content="Page Content 2"></page-viewer>
 
-    we want to have dynamic data here so
+    Go to step 8.
 
-    <page-viewer
-      v-bind:page-title="pages[activePage].pageTitle"
-      v-bind:page-content="pages[activePage].content"
-    ></page-viewer>
+    -->
 
-    We can make this better
-
-     -->
-    <page-viewer v-bind:page="pages[activePage]"></page-viewer>
     <script>
+      /*1. Create a variable for our application.
+
+      Why? we need to be able to reference our application in order to create components
+
+      */
+
       let app = Vue.createApp({
         data() {
           return {
@@ -112,29 +121,53 @@
         },
       });
 
+      /*3. Before we mount our app we want to create our component and we do so with a method called component
+       rules to follow:lower case name, sepearate other words with hyphen, non html names
+
+
+       second argument is an OPTIONS object
+
+       remember that ANY OPTION ABOVE can be used inside a component
+
+       */
+
       app.component('page-viewer', {
-        /*
-        2. Update the page viewer component so it can display the page title and content from the single attribute data
+        /*8. We have two props on the element but not enough to supply value to them, but we need to
+        define them inside our components. Use the PROPS Option which is an array that contains the name
+        of the props.
+
+        USE CAMEL CASE. that means in the html we use markup-attribute, but in javascript in camelCase
         */
-        props: ['page'],
-        template: `
+        props: ['pageTitle', 'pageContent'],
+
+        /*4.the first we start off with is template option because an application needs a template, and
+        a component is kind of like a mini application
+
+        */
+        template:
+          /*9. NOW we can use content from the props passed down after connecting them with the html attribute*/
+          `
         <div class="container">
-          <h1>{{page.pageTitle}}</h1> 
-          <p>{{page.content}}</p>
+          <h1>{{pageTitle}}</h1> 
+          <p>{{pageContent}}</p>
         </div>
         `,
+        /*
+
+         <div class="container">
+          <h1>{{pages[activePage].pageTitle}}</h1>
+          <p>{{pages[activePage].content}}</p>
+        </div>
+
+          If we tried to use this component, there would be an error
+          because this component is trying to use the pages variable from our application, but by default
+          it doesn't have access to that information because it's inside of it's own component.
+          for now use placeholders Page Title and Page Content
+        */
       });
 
+      /*2. Seperate into two statements, so we create our app then we mount or app*/
       app.mount('body');
     </script>
   </body>
 </html>
-
-<!-- 
-  Summary:
-  We created a component and gave it a name.
-  That component can have OPTIONS. 
-  One option is called template - html/element that makes that component
-  One option is called props - props are essentially the arguments of a component so we can pass data to our component 
-  In the custom component element, we passed in the activePage as the page prop inside the component so that we can use that as an object/data to output the content
--->
