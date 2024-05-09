@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <!-- Navbar
+    3. SUPER IMPORTANT to remember to use the vue bind directive or it'll pass literal strings
+
+      let's just imagine if we didn't bind active-page, it would mean that we are still using the numeric value we set which is 0
+
+      DATA FLOWS FROM PARENT TO CHILD
+      meaning that the app in the script is the parent, and the child is the navbar component
+
+      so if we didn't bind the v-bind:active-page="activePage"
+      was just active-page="activePage"
+      
+      then the data activePage was initialized as 0
+      active-page="0"
+
+
+      so the next time activePage is updatd, that change is not gonna be passed down to navbar because it is not bound so it will stay as 0
+
+      SO IF U WANT THE CHILD COMPONENT TO UPDATE BASED UPON THE DATA IT IS PROVIDED SO U NEED TO BIND THE DATA TO THOSE PROPS
+
+
+    9. For example we talked about the click event
+    (v-on:)@click="[function name or code to execute]"
+
+
+    well in this particular case click is essentially a prop, a special prop because it is an event.
+    We can eventually do the same thing with our own attribute
+
+    :nav-link-click="(index)=> activePage"
+     
+    <navbar 
+    v-bind:pages="pages" 
+    v-bind:active-page="activePage"
+    :nav-link-click="(index)=> activePage = index"
+    ></navbar>
+    
+    Remember that since we are on the navbar component, we are inside the APP NOT the NAVBAR so "(index)=> activePage = index" is for the application
+
+    Go to step 10
+
+    -->
+    <navbar
+      v-bind:pages="pages"
+      v-bind:active-page="activePage"
+      :nav-link-click="(index)=> activePage = index"
+    ></navbar>
+    <!--  -->
+    <page-viewer v-bind:page="pages[activePage]"></page-viewer>
+    <script>
+      let app = Vue.createApp({
+        data() {
+          return {
+            activePage: 0,
+            /*
+            theme: 'light',
+
+            4. We can remove the theme since it is specific to the navbar so we can take that out of the app
+            and we can define it as part of the data of the navbar, go to step 5
+
+            */
+            pages: [
+              {
+                link: { text: 'Home', url: 'index.html' },
+                pageTitle: 'Home Page',
+                content: 'This is home content',
+              },
+              {
+                link: { text: 'About', url: 'about.html' },
+                pageTitle: 'About Page',
+                content: 'This is about content',
+              },
+              {
+                link: { text: 'Contact', url: 'contact.html' },
+                pageTitle: 'Contact Page',
+                content: 'This is contact content',
+              },
+            ],
+          };
+        },
+
+        /* 6. The same is true to our method, specific to the navbar so add the methods option to the component
+        methods: {
+          changeTheme() {
+            if (this.theme == 'light') {
+              this.theme = 'dark';
+            } else {
+              this.theme = 'light';
+            }
+          },
+        },
+        */
+      });
+
+      app.component('page-viewer', {
+        props: ['page'],
+        template: `
+          <div class="container">
+            <h1>{{page.pageTitle}}</h1>
+            <p>{{page.content}}</p>
+          </div>
+          `,
+      });
+
+      app.component('navbar', {
+        /*2. Define the props that it needs.
+        
+        it needs the pages to generate the a elements for the links and the active page
+        
+        recommend to keep the same name from the data because
+        remember props are alot like paramters on a function. these are variables we use inside of our template
+
+
+       8. Up to this point, everything looks good on localhost EXCEPT when you click on the nav links, nothing happens.
+       The reason is very simple, we are not updating the activePage. Now if you look at the template, you
+       see the v-on directive does have an event listener to see the activePage change.
+
+       HOWEVER, props are READ ONLY. So we can't change their value INSIDE of components.
+
+       Remember that data flows from parent to child, so if we were to change the value of a prop inside of a child, the parent 
+       would not know the value changed because data flows from parent to child.
+
+       So how do we do the reverse aka how can a child notify a parent that something changes.
+
+      solution: We use an EVENT or essentally an EVENT
+
+
+
+        
+        */
+        props: ['pages', 'activePage', 'navLinkClick'],
+
+        /*1. Cut and paste the nav element to create the next component
+
+        The template are gonna use backticks in order to delimit this string. However we already
+        are using the js template strings inside of this template so that means we need to ESCAPE thosee backticks in the elements
+        
+        This is one of the reasons why when we get into components it makes sense to use build tools and toolchain because
+        when you start using JSX you don't need to do anything like this
+        
+
+        10. all we need to do is change where we click on the a element
+          two things we need to do:
+          first define prop called navLinkClick and it is a function that will pass in the index in the a element click
+
+          SO it works alot like an event.
+          
+          The parent is supplying the function to navLinkClick that the child is going to execute, the child is going to pass the index back 
+          so that inside of the application, we can update activePage to that index value.
+        */
+        template: `
+          <nav
+        :class="[\`navbar-\${theme}\`, \`bg-\${theme}\`, 'navbar', 'navbar-expand-lg']"
+      >
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li
+              v-for="(page, index) in pages"
+              class="nav-item active"
+              :key="index"
+            >
+              <a
+                class="nav-link"
+                :class="{active: activePage == index}"
+                v-bind:href="page.link.url"
+                :title="\`This link goes to the \${page.link.text} page\`"
+                v-on:click.prevent="navLinkClick(index)"
+                >{{page.link.text}}
+              </a>
+            </li>
+          </ul> 
+          <form class="d-flex">
+            <button class="btn btn-primary" v-on:click.prevent="changeTheme">
+              {{useDarkNavbar ? "Change to light mode" : "Change to dark mode"}}
+            </button>
+          </form>
+        </div>
+      </nav>
+
+          `,
+        /*5. Define the theme using the data option*/
+        data() {
+          return {
+            theme: 'light',
+          };
+        },
+        /*7. Add method here*/
+        methods: {
+          changeTheme() {
+            if (this.theme == 'light') {
+              this.theme = 'dark';
+            } else {
+              this.theme = 'light';
+            }
+          },
+        },
+      });
+
+      app.mount('body');
+    </script>
+  </body>
+</html>
