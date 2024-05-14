@@ -58,7 +58,6 @@
       v-bind:active-page="activePage"
       :nav-link-click="(index)=> activePage = index"
     ></navbar>
-    <!--  -->
     <page-viewer v-bind:page="pages[activePage]"></page-viewer>
     <script>
       let app = Vue.createApp({
