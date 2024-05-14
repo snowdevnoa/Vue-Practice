@@ -1,5 +1,4 @@
-<!-- 3.3 
-  
+<!-- 
   3.
    replace {active: activePage == index} with activeClasses where we bind our css classes
    we don't need this attribute anymore v-on:click.prevent="navLinkClick(index)", instead we can copy and paste this
@@ -32,7 +31,7 @@ export default {
   },
 };
 </script>
-<!-- 3.3 5. you may think that defining css here restricts it to the component only but that is false, you can add the emphasize css
+<!-- 5. you may think that defining css here restricts it to the component only but that is false, you can add the emphasize css
 class to let's say PageViewer component and it will appear
 
 HOWEVER we CAN make them scoped by adding the 'scoped' attribute to the style elment
@@ -44,7 +43,7 @@ HOWEVER we CAN make them scoped by adding the 'scoped' attribute to the style el
 }
 </style>
 
-<!-- 3.3 7.  
+<!-- 7.  
   SUMMARY: when it comes to adding css to our project, we have several different options:
   we can install them as a dependency and import them.
   we can define css for our component: global or scoped
