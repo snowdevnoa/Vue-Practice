@@ -15,19 +15,19 @@
 
     go to PageViewer component
    -->
-   <router-view></router-view>
+  <router-view></router-view>
 </template>
 
 <script>
-import PageViewer from './components/Page-Viewer.vue';
+// import PageViewer from './components/Page-Viewer.vue';
 import Navbar from './components/Navbar.vue';
-import CreatePage from './components/Create-Page.vue';
+// import CreatePage from './components/Create-Page.vue';
 
 export default {
   components: {
     Navbar,
-    PageViewer,
-    CreatePage,
+    // PageViewer,
+    // CreatePage,
   },
   created() {
     this.getPages();
@@ -54,7 +54,6 @@ export default {
   },
 };
 </script>
-
 
 <!-- Summary: 
 
