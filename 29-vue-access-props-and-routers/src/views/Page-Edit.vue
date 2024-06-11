@@ -20,7 +20,8 @@ const route = useRoute();
 /* 11. Get our props from the route. There is a built in function we can use wihtout having to
 import anything:
 
-defineProps([an array that contains the strings of props that we need])
+defineProps([an array that contains the strings of props that we need]) or
+defineProps({an object with the key as the prop, and the value being the type})
 
 Works alot like the props option in the Option API*/
 
